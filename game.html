@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supershark Game</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #87ceeb;
+            overflow: hidden;
+        }
+        #gameCanvas {
+            border: 2px solid #000;
+        }
+        #score {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-family: Arial, sans-serif;
+            font-size: 20px;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div id="score">Score: 0</div>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreElement = document.getElementById('score');
+        let score = 0;
+
+        const sharkImg = new Image();
+        sharkImg.src = "img/super_shark.jpg"  // replace with real url
+
+        const shark = {
+            x: 50,
+            y: canvas.height - 100,
+            width: 80,
+            height: 80,
+            speed: 5,
+            dx: 0
+        };
+
+        const targets = [];
+        const targetSpeed = 2;
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') shark.dx = -shark.speed;
+            if (e.key === 'ArrowRight') shark.dx = shark.speed;
+        });
+
+        document.addEventListener('keyup', (e) => {
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') shark.dx = 0;
+        });
+
+        function spawnTarget() {
+            const target = {
+                x: canvas.width,
+                y: Math.random() * (canvas.height - 50),
+                width: 50,
+                height: 50
+            };
+            targets.push(target);
+        }
+
+        function update() {
+            shark.x += shark.dx;
+
+            if (shark.x < 0) shark.x = 0;
+            if (shark.x + shark.width > canvas.width) shark.x = canvas.width - shark.width;
+
+            if (Math.random() < 0.02) spawnTarget();
+
+            for (let i = targets.length - 1; i >= 0; i--) {
+                targets[i].x -= targetSpeed;
+
+                if (targets[i].x + targets[i].width < 0) {
+                    targets.splice(i, 1);
+                    continue;
+                }
+
+                if (
+                    shark.x < targets[i].x + targets[i].width &&
+                    shark.x + shark.width > targets[i].x &&
+                    shark.y < targets[i].y + targets[i].height &&
+                    shark.y + shark.height > targets[i].y
+                ) {
+                    targets.splice(i, 1);
+                    score += 10;
+                    scoreElement.textContent = `Punkte: ${score}`;
+                }
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = 'red';
+            targets.forEach(target => {
+                ctx.fillRect(target.x, target.y, target.width, target.height);
+            });
+
+            ctx.drawImage(sharkImg, shark.x, shark.y, shark.width, shark.height);
+        }
+
+        function gameLoop() {
+            update();
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+
+        sharkImg.onload = () => {
+            gameLoop();
+        };
+    </script>
+</body>
+</html>
