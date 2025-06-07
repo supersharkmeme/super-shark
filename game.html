@@ -18,7 +18,7 @@
         #gameCanvas {
             border: 2px solid #000;
         }
-        #score {
+        #scoreDisplay {
             position: absolute;
             top: 10px;
             left: 10px;
@@ -26,21 +26,40 @@
             font-size: 20px;
             color: #fff;
         }
+        #backButton {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #ff4500;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #backButton:hover {
+            background-color: #ff6347;
+        }
     </style>
 </head>
 <body>
-    <div id="score">Score: 0</div>
+    <div id="scoreDisplay">Score: 0</div>
+    <button id="backButton" onclick="window.location.href='index.html'">Back to Home</button>
     <canvas id="gameCanvas" width="800" height="600"></canvas>
 
     <script>
+        // Get canvas and context
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
-        const scoreElement = document.getElementById('score');
+        const scoreDisplay = document.getElementById('scoreDisplay');
         let score = 0;
 
-        const sharkImg = new Image();
-        sharkImg.src = "img/super_shark.jpg"  // replace with real url
+        // Load shark image
+        const sharkImage = new Image();
+        sharkImage.src = 'img/super_shark.jpg';
 
+        // Shark object properties
         const shark = {
             x: 50,
             y: canvas.height - 100,
@@ -50,18 +69,21 @@
             dx: 0
         };
 
+        // Array for targets and speed
         const targets = [];
         const targetSpeed = 2;
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowLeft') shark.dx = -shark.speed;
-            if (e.key === 'ArrowRight') shark.dx = shark.speed;
+        // Handle keyboard input for movement
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'ArrowLeft') shark.dx = -shark.speed;
+            if (event.key === 'ArrowRight') shark.dx = shark.speed;
         });
 
-        document.addEventListener('keyup', (e) => {
-            if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') shark.dx = 0;
+        document.addEventListener('keyup', (event) => {
+            if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') shark.dx = 0;
         });
 
+        // Spawn new target
         function spawnTarget() {
             const target = {
                 x: canvas.width,
@@ -72,14 +94,18 @@
             targets.push(target);
         }
 
-        function update() {
+        // Update game state
+        function updateGame() {
             shark.x += shark.dx;
 
+            // Boundary checking
             if (shark.x < 0) shark.x = 0;
             if (shark.x + shark.width > canvas.width) shark.x = canvas.width - shark.width;
 
+            // Spawn targets randomly
             if (Math.random() < 0.02) spawnTarget();
 
+            // Update and check collisions for targets
             for (let i = targets.length - 1; i >= 0; i--) {
                 targets[i].x -= targetSpeed;
 
@@ -96,29 +122,34 @@
                 ) {
                     targets.splice(i, 1);
                     score += 10;
-                    scoreElement.textContent = `Punkte: ${score}`;
+                    scoreDisplay.textContent = `Score: ${score}`;
                 }
             }
         }
 
-        function draw() {
+        // Draw game elements
+        function drawGame() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+            // Draw targets
             ctx.fillStyle = 'red';
             targets.forEach(target => {
                 ctx.fillRect(target.x, target.y, target.width, target.height);
             });
 
-            ctx.drawImage(sharkImg, shark.x, shark.y, shark.width, shark.height);
+            // Draw shark
+            ctx.drawImage(sharkImage, shark.x, shark.y, shark.width, shark.height);
         }
 
+        // Main game loop
         function gameLoop() {
-            update();
-            draw();
+            updateGame();
+            drawGame();
             requestAnimationFrame(gameLoop);
         }
 
-        sharkImg.onload = () => {
+        // Start game when image is loaded
+        sharkImage.onload = () => {
             gameLoop();
         };
     </script>
