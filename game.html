@@ -66,7 +66,7 @@
             width: 80,
             height: 80,
             speed: 5,
-            dx: 0
+            dy: 0 // CHANGED: Renamed from dx to dy for vertical movement
         };
 
         // Array for targets and speed
@@ -75,12 +75,12 @@
 
         // Handle keyboard input for movement
         document.addEventListener('keydown', (event) => {
-            if (event.key === 'ArrowLeft') shark.dx = -shark.speed;
-            if (event.key === 'ArrowRight') shark.dx = shark.speed;
+            if (event.key === 'ArrowUp') shark.dy = -shark.speed; // CHANGED: Changed from ArrowLeft to ArrowUp
+            if (event.key === 'ArrowDown') shark.dy = shark.speed; // CHANGED: Changed from ArrowRight to ArrowDown
         });
 
         document.addEventListener('keyup', (event) => {
-            if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') shark.dx = 0;
+            if (event.key === 'ArrowUp' || event.key === 'ArrowDown') shark.dy = 0; // CHANGED: Changed from ArrowLeft/ArrowRight to ArrowUp/ArrowDown
         });
 
         // Spawn new target
@@ -96,11 +96,11 @@
 
         // Update game state
         function updateGame() {
-            shark.x += shark.dx;
+            shark.y += shark.dy; // CHANGED: Changed from shark.x += shark.dx to shark.y += shark.dy for vertical movement
 
             // Boundary checking
-            if (shark.x < 0) shark.x = 0;
-            if (shark.x + shark.width > canvas.width) shark.x = canvas.width - shark.width;
+            if (shark.y < 0) shark.y = 0;
+            if (shark.y + shark.height > canvas.height) shark.y = canvas.height - shark.height; // CHANGED: Changed x and width to y and height
 
             // Spawn targets randomly
             if (Math.random() < 0.02) spawnTarget();
