@@ -19,7 +19,9 @@
         #gameCanvas {
             border: 2px solid #000;
             max-width: 100%;
-            height: auto;
+            max-height: 100vh;
+            width: 800px;
+            height: 600px;
         }
         #scoreDisplay {
             position: absolute;
@@ -54,6 +56,7 @@
             color: white;
             font-size: 3vw;
             cursor: pointer;
+            display: none; /* Hidden by default on PC */
         }
         #upButton {
             bottom: 20vw;
@@ -62,6 +65,15 @@
         #downButton {
             bottom: 5vw;
             left: 5vw;
+        }
+        @media (max-width: 800px) {
+            .control-button {
+                display: block; /* Show on mobile */
+            }
+            #gameCanvas {
+                width: 100vw;
+                height: 75vw; /* Maintain aspect ratio */
+            }
         }
     </style>
 </head>
@@ -189,9 +201,16 @@
             gameLoop();
         };
 
-        // Adjust canvas size for mobile
+        // Adjust canvas size for different screens
         function resizeCanvas() {
             const scale = Math.min(window.innerWidth / 800, window.innerHeight / 600);
+            if (window.innerWidth > 800) {
+                canvas.style.width = '800px';
+                canvas.style.height = '600px';
+            } else {
+                canvas.style.width = '100vw';
+                canvas.style.height = '75vw';
+            }
             canvas.style.transform = `scale(${scale})`;
             canvas.style.transformOrigin = '0 0';
         }
