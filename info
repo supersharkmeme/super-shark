@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supershark Info</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #000;
+            color: #00ff00;
+            font-family: 'Courier New', Courier, monospace;
+            overflow-y: auto;
+        }
+        .container {
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        p {
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+        .section {
+            margin: 20px 0;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #ff0000;
+            color: #00ff00;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #cc0000;
+        }
+        .token-info, .roadmap {
+            text-align: left;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SUPERSHARK IS HERE</h1>
+        <p>...and this time, it's on the blockchain.</p>
+        <p>Early June. The shark awakens.</p>
+        <div class="section">
+            <button>JOIN THE PANIC</button>
+            <button>VIEW ROADMAP</button>
+        </div>
+
+        <div class="section token-info">
+            <h2>$SUPERSHARK Token Info</h2>
+            <p>Name: Supershark Panic</p>
+            <p>Ticker: $SUPERSHARK</p>
+            <p>Chain: Solana</p>
+            <p>Tax: 0% - Pure Meme Play</p>
+            <p>Status: Fair Launch | No Presale | Community-Led</p>
+        </div>
+
+        <div class="section roadmap">
+            <h2>Roadmap</h2>
+            <ul>
+                <li>Phase 1: Glitch the Internet</li>
+                <li>Phase 2: $SUPERSHARK Goes Live</li>
+                <li>Phase 3: NFT Integration & Meme Warfare</li>
+                <li>Phase 4: Merch & Chaos</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <button onclick="window.location.href='index.html'">Home</button>
+            <button onclick="window.location.href='#roadmap'">Roadmap</button>
+        </div>
+
+        <p>This is not financial advice. This is digital chaos.</p>
+        <p>&copy; 2025 SUPERSHARK</p>
+    </div>
+</body>
+</html>
