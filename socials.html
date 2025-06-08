@@ -24,6 +24,10 @@
             padding: 5px;
             font-size: 16px;
             width: 300px;
+            background-color: #f0f0f0;
+            border: none;
+            border-bottom: 1px solid #000;
+            outline: none;
         }
         h1 {
             color: #ff4500;
@@ -41,15 +45,20 @@
         button:hover {
             background-color: #ff6347;
         }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Supershark Socials</h1>
-        <input type="text" placeholder="Twitter Link" id="twitterLink">
-        <input type="text" placeholder="Telegram Link" id="telegramLink">
-        <input type="text" placeholder="YouTube Link" id="youtubeLink">
-        <input type="text" placeholder="TikTok Link" id="tikTokLink">
+        <label>Twitter Link</label><input type="text" value="Twitter Link" readonly>
+        <label>Telegram Link</label><input type="text" value="Telegram Link" readonly>
+        <label>YouTube Link</label><input type="text" value="YouTube Link" readonly>
+        <label>TikTok Link</label><input type="text" value="TikTok Link" readonly>
         <a href="index.html"><button>Back to Home</button></a>
     </div>
 </body>
