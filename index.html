@@ -2,8 +2,8 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Supershark Meme</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Supershark Game</title>
     <style>
         body {
             margin: 0;
@@ -11,37 +11,221 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            background-color: #f0f0f0;
+            min-height: 100vh;
+            background-color: #87ceeb;
+            overflow: hidden;
+            touch-action: manipulation;
+        }
+        #gameContainer {
+            position: relative;
+            max-width: 800px;
+            max-height: 600px;
+            width: 80vw;
+            height: 60vw;
+            max-width: 800px;
+            max-height: 600px;
+        }
+        #gameCanvas {
+            border: 2px solid #000;
+            width: 100%;
+            height: 100%;
+        }
+        #scoreDisplay {
+            position: absolute;
+            top: -40px;
+            right: 0;
             font-family: Arial, sans-serif;
+            font-size: 5vw;
+            color: #fff;
         }
-        .container {
-            text-align: center;
-        }
-        img {
-            max-width: 100%;
-            height: auto;
-        }
-        button {
+        #backButton {
+            position: absolute;
+            top: -40px;
+            left: 0;
             padding: 10px 20px;
-            font-size: 16px;
+            font-size: 4vw;
             background-color: #ff4500;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 10px;
             cursor: pointer;
         }
-        button:hover {
+        #backButton:hover {
             background-color: #ff6347;
+        }
+        .control-button {
+            position: absolute;
+            width: 10vw;
+            height: 10vw;
+            background-color: rgba(255, 69, 0, 0.7);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 3vw;
+            cursor: pointer;
+            display: none; /* Hidden by default on PC */
+        }
+        #upButton {
+            bottom: 20vw;
+            left: 5vw;
+        }
+        #downButton {
+            bottom: 5vw;
+            left: 5vw;
+        }
+        @media (max-width: 800px) {
+            .control-button {
+                display: block; /* Show on mobile */
+            }
+            #gameContainer {
+                width: 100vw;
+                height: 75vw;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1> Supershark Meme </h1>
-        <img src="img/Supershark_bites_smaller.jpg">
-        <br><br>
-        <a href="game.html"><button> Start the game bro </button></a>
+    <div id="gameContainer">
+        <div id="scoreDisplay">Score: 0</div>
+        <button id="backButton" onclick="window.location.href='index.html'">Back to Home</button>
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+        <button id="upButton" class="control-button">↑</button>
+        <button id="downButton" class="control-button">↓</button>
     </div>
+
+    <script>
+        // Get canvas and context
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        let score = 0;
+
+        // Load shark image
+        const sharkImage = new Image();
+        sharkImage.src = 'img/super_shark.jpg';
+
+        // Shark object properties
+        const shark = {
+            x: 50,
+            y: canvas.height - 100,
+            width: 80,
+            height: 80,
+            speed: 5,
+            dy: 0
+        };
+
+        // Array for targets and speed
+        const targets = [];
+        const targetSpeed = 2;
+
+        // Handle keyboard and touch input for movement
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'ArrowUp') shark.dy = -shark.speed;
+            if (event.key === 'ArrowDown') shark.dy = shark.speed;
+        });
+
+        document.addEventListener('keyup', (event) => {
+            if (event.key === 'ArrowUp' || event.key === 'ArrowDown') shark.dy = 0;
+        });
+
+        // Touch controls
+        const upButton = document.getElementById('upButton');
+        const downButton = document.getElementById('downButton');
+
+        upButton.addEventListener('touchstart', () => shark.dy = -shark.speed);
+        upButton.addEventListener('touchend', () => shark.dy = 0);
+        downButton.addEventListener('touchstart', () => shark.dy = shark.speed);
+        downButton.addEventListener('touchend', () => shark.dy = 0);
+
+        // Spawn new target
+        function spawnTarget() {
+            const target = {
+                x: canvas.width,
+                y: Math.random() * (canvas.height - 50),
+                width: 50,
+                height: 50
+            };
+            targets.push(target);
+        }
+
+        // Update game state
+        function updateGame() {
+            shark.y += shark.dy;
+
+            // Boundary checking
+            if (shark.y < 0) shark.y = 0;
+            if (shark.y + shark.height > canvas.height) shark.y = canvas.height - shark.height;
+
+            // Spawn targets randomly
+            if (Math.random() < 0.02) spawnTarget();
+
+            // Update and check collisions for targets
+            for (let i = targets.length - 1; i >= 0; i--) {
+                targets[i].x -= targetSpeed;
+
+                if (targets[i].x + targets[i].width < 0) {
+                    targets.splice(i, 1);
+                    continue;
+                }
+
+                if (
+                    shark.x < targets[i].x + targets[i].width &&
+                    shark.x + shark.width > targets[i].x &&
+                    shark.y < targets[i].y + targets[i].height &&
+                    shark.y + shark.height > targets[i].y
+                ) {
+                    targets.splice(i, 1);
+                    score += 10;
+                    scoreDisplay.textContent = `Score: ${score}`;
+                }
+            }
+        }
+
+        // Draw game elements
+        function drawGame() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw targets as golden coins
+            ctx.fillStyle = '#ffd700';
+            targets.forEach(target => {
+                ctx.beginPath();
+                ctx.arc(target.x + target.width / 2, target.y + target.height / 2, target.width / 2, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.closePath();
+            });
+
+            // Draw shark
+            ctx.drawImage(sharkImage, shark.x, shark.y, shark.width, shark.height);
+        }
+
+        // Main game loop
+        function gameLoop() {
+            updateGame();
+            drawGame();
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Start game when image is loaded
+        sharkImage.onload = () => {
+            gameLoop();
+        };
+
+        // Adjust canvas size for different screens
+        function resizeCanvas() {
+            const container = document.getElementById('gameContainer');
+            const scale = Math.min(container.offsetWidth / 800, container.offsetHeight / 600);
+            if (window.innerWidth > 800) {
+                canvas.style.width = '800px';
+                canvas.style.height = '600px';
+            } else {
+                canvas.style.width = '100%';
+                canvas.style.height = '100%';
+            }
+            canvas.style.transform = `scale(${scale})`;
+            canvas.style.transformOrigin = '0 0';
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+    </script>
 </body>
 </html>
