@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Supershark Game</title>
     <style>
         body {
@@ -14,46 +14,54 @@
             height: 100vh;
             background-color: #87ceeb;
             overflow: hidden;
-            position: relative;
+            touch-action: manipulation;
         }
         #gameCanvas {
-            border: 10px solid gold;
-            border-radius: 20px;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
+            border: 2px solid #000;
+            max-width: 100%;
+            height: auto;
         }
         #scoreDisplay {
             position: absolute;
-            top: 20px;
-            left: 20px;
-            font-family: 'Comic Sans MS', cursive;
-            font-size: 24px;
-            color: #ffd700;
-            text-shadow: 2px 2px 4px #000;
+            top: 10px;
+            left: 10px;
+            font-family: Arial, sans-serif;
+            font-size: 5vw;
+            color: #fff;
         }
         #backButton {
             position: absolute;
-            top: 20px;
-            right: 20px;
-            padding: 15px 30px;
-            font-size: 18px;
+            top: 10px;
+            right: 10px;
+            padding: 10px 20px;
+            font-size: 4vw;
             background-color: #ff4500;
             color: white;
             border: none;
             border-radius: 10px;
             cursor: pointer;
-            font-family: 'Comic Sans MS', cursive;
-            box-shadow: 0 0 10px rgba(255, 69, 0, 0.7);
         }
         #backButton:hover {
             background-color: #ff6347;
         }
-        .coin {
+        .control-button {
             position: absolute;
-            width: 20px;
-            height: 20px;
-            background: radial-gradient(circle at 30% 30%, #ffd700, #daa520);
+            width: 10vw;
+            height: 10vw;
+            background-color: rgba(255, 69, 0, 0.7);
+            border: none;
             border-radius: 50%;
-            box-shadow: 0 0 5px #ffd700;
+            color: white;
+            font-size: 3vw;
+            cursor: pointer;
+        }
+        #upButton {
+            bottom: 20vw;
+            left: 5vw;
+        }
+        #downButton {
+            bottom: 5vw;
+            left: 5vw;
         }
     </style>
 </head>
@@ -61,6 +69,8 @@
     <div id="scoreDisplay">Score: 0</div>
     <button id="backButton" onclick="window.location.href='index.html'">Back to Home</button>
     <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <button id="upButton" class="control-button">↑</button>
+    <button id="downButton" class="control-button">↓</button>
 
     <script>
         // Get canvas and context
@@ -87,10 +97,7 @@
         const targets = [];
         const targetSpeed = 2;
 
-        // Array for coins
-        const coins = [];
-
-        // Handle keyboard input for movement
+        // Handle keyboard and touch input for movement
         document.addEventListener('keydown', (event) => {
             if (event.key === 'ArrowUp') shark.dy = -shark.speed;
             if (event.key === 'ArrowDown') shark.dy = shark.speed;
@@ -99,6 +106,15 @@
         document.addEventListener('keyup', (event) => {
             if (event.key === 'ArrowUp' || event.key === 'ArrowDown') shark.dy = 0;
         });
+
+        // Touch controls
+        const upButton = document.getElementById('upButton');
+        const downButton = document.getElementById('downButton');
+
+        upButton.addEventListener('touchstart', () => shark.dy = -shark.speed);
+        upButton.addEventListener('touchend', () => shark.dy = 0);
+        downButton.addEventListener('touchstart', () => shark.dy = shark.speed);
+        downButton.addEventListener('touchend', () => shark.dy = 0);
 
         // Spawn new target
         function spawnTarget() {
@@ -109,18 +125,6 @@
                 height: 50
             };
             targets.push(target);
-        }
-
-        // Spawn new coin
-        function spawnCoin() {
-            const coin = {
-                x: Math.random() * (canvas.width - 800) + 400, // Avoid game area
-                y: 0,
-                width: 20,
-                height: 20,
-                speed: 2
-            };
-            coins.push(coin);
         }
 
         // Update game state
@@ -154,38 +158,23 @@
                     scoreDisplay.textContent = `Score: ${score}`;
                 }
             }
-
-            // Update coins
-            coins.forEach(coin => {
-                coin.y += coin.speed;
-                if (coin.y > canvas.height) coin.y = canvas.height; // Stop at bottom
-            });
-
-            // Spawn new coin every 500ms
-            if (Math.random() < 0.02) spawnCoin();
         }
 
         // Draw game elements
         function drawGame() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Draw targets
-            ctx.fillStyle = 'red';
+            // Draw targets as golden coins
+            ctx.fillStyle = '#ffd700';
             targets.forEach(target => {
-                ctx.fillRect(target.x, target.y, target.width, target.height);
+                ctx.beginPath();
+                ctx.arc(target.x + target.width / 2, target.y + target.height / 2, target.width / 2, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.closePath();
             });
 
             // Draw shark
             ctx.drawImage(sharkImage, shark.x, shark.y, shark.width, shark.height);
-
-            // Draw coins
-            coins.forEach(coin => {
-                ctx.beginPath();
-                ctx.arc(coin.x, coin.y, coin.width / 2, 0, Math.PI * 2);
-                ctx.fillStyle = '#ffd700';
-                ctx.fill();
-                ctx.closePath();
-            });
         }
 
         // Main game loop
@@ -199,6 +188,15 @@
         sharkImage.onload = () => {
             gameLoop();
         };
+
+        // Adjust canvas size for mobile
+        function resizeCanvas() {
+            const scale = Math.min(window.innerWidth / 800, window.innerHeight / 600);
+            canvas.style.transform = `scale(${scale})`;
+            canvas.style.transformOrigin = '0 0';
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
     </script>
 </body>
 </html>
