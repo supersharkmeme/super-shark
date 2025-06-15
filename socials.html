@@ -18,16 +18,15 @@
         .container {
             text-align: center;
         }
-        input {
+        a.social-link {
             display: block;
-            margin: 5px auto;
-            padding: 5px;
-            font-size: 16px;
-            width: 300px;
-            background-color: #f0f0f0;
-            border: none;
-            border-bottom: 1px solid #000;
-            outline: none;
+            margin: 10px 0;
+            font-size: 18px;
+            color: #ff4500;
+            text-decoration: none;
+        }
+        a.social-link:hover {
+            text-decoration: underline;
         }
         h1 {
             color: #ff4500;
@@ -45,20 +44,15 @@
         button:hover {
             background-color: #ff6347;
         }
-        label {
-            display: block;
-            margin-bottom: -5px;
-            font-weight: bold;
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Supershark Socials</h1>
-        <label>Twitter Link</label><input type="text" value="https://x.com/SuperShark_Meme" readonly><br>
-        <label>Telegram Link</label><input type="text" value="https://t.me/+QEUR405B54I1ZDNk" readonly><br>
-        <label>YouTube Link</label><input type="text" value="www.youtube.com/@SuperShark_Forever" readonly><br>
-        <label>TikTok Link</label><input type="text" value="https://www.tiktok.com/@supersharkmemeforever" readonly><br>
+        <a class="social-link" href="https://x.com/SuperShark_Meme" target="_blank">X (Twitter)</a>
+        <a class="social-link" href="https://t.me/+QEUR405B54I1ZDNk" target="_blank">Telegram</a>
+        <a class="social-link" href="https://www.youtube.com/@SuperShark_Forever" target="_blank">YouTube</a>
+        <a class="social-link" href="https://www.tiktok.com/@supersharkmemeforever" target="_blank">TikTok</a>
         <a href="index.html"><button>Back to Home</button></a>
     </div>
 </body>
