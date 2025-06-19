@@ -50,6 +50,17 @@
             max-width: 600px;
             margin: 0 auto;
         }
+        .market-data {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .market-data p {
+            background-color: #333;
+            padding: 10px;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
@@ -67,8 +78,13 @@
             <p>Name: Supershark </p>
             <p>Ticker: $SUPERSHARK</p>
             <p>Chain: Solana</p>
-
             <p>Status: Fair Launch | No Presale | Community-Led</p>
+            <div class="market-data">
+                <p>Market Cap: <span id="marketCap">$10,000,000</span></p>
+                <p>Liquidity: <span id="liquidity">$2,500,000</span></p>
+                <p>Price: <span id="price">$0.025</span></p>
+                <p>Price Increase Since Launch: <span id="priceIncrease">+150%</span></p>
+            </div>
         </div>
 
         <div class="section roadmap">
@@ -86,7 +102,28 @@
         </div>
 
         <p>This is not financial advice. This is digital chaos.</p>
-        <p>&copy; 2025 SUPERSHARK</p>
+        <p>© 2025 SUPERSHARK</p>
     </div>
+
+    <script>
+        // Simulate dynamic updates (replace with actual API calls for real data)
+        function updateMarketData() {
+            // Placeholder values; in production, fetch from an API (e.g., CoinGecko, Solana blockchain)
+            const marketCap = (Math.random() * 10000000 + 5000000).toFixed(2);
+            const liquidity = (Math.random() * 5000000 + 1000000).toFixed(2);
+            const price = (Math.random() * 0.1 + 0.01).toFixed(3);
+            const priceIncrease = (Math.random() * 200 + 50).toFixed(1);
+
+            document.getElementById('marketCap').textContent = `$${marketCap.toLocaleString()}`;
+            document.getElementById('liquidity').textContent = `$${liquidity.toLocaleString()}`;
+            document.getElementById('price').textContent = `$${price}`;
+            document.getElementById('priceIncrease').textContent = `+${priceIncrease}%`;
+        }
+
+        // Update every 10 seconds for demo purposes
+        setInterval(updateMarketData, 10000);
+        // Initial update
+        updateMarketData();
+    </script>
 </body>
 </html>
